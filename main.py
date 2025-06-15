@@ -4,11 +4,14 @@ from pythonosc.udp_client import SimpleUDPClient
 from pythonosc.dispatcher import Dispatcher
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 
+import surface
 import graphics
 import handle
 import programlogic
 
-handle.Init(debug=False)
+from surface import Keys
+
+handle.Init(debug=True)
 
 dispatcher = Dispatcher()
 dispatcher.set_default_handler(handle.echo_handler, True)
@@ -42,6 +45,7 @@ async def mainloop():
     # Main Program Loop - Draw Window - Returns false when Raylib.window_should_close()
     while not graphics.GFXDraw(faders=handle.faders, channel=handle.channel, commandline=handle.commandline, encoders=handle.encoders, activeEncoder=handle.activeEncoder):
         programlogic.StateFromClickEvent(graphics.scan())
+        surface.handle()
         await asyncio.sleep(0)
 
     #Gracefully close program... Do shutdown procedure here.

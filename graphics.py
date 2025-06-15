@@ -2,6 +2,7 @@
 ## IMPORT LIBRARIES ##
 ######################
 import pyray as rl
+from enum import Enum
 import UIElements as UI
 from programlogic import State
 from handle import SelectedChannel, EncoderState
@@ -24,6 +25,13 @@ class col():
     buttonFontActive = rl.BLACK
     toolbarBackground = rl.GRAY
 
+class EncoderPage(Enum):
+    INTENSITY = 0
+    COLOR_RGB = 1
+    COLOR_CMY = 2
+    POSITION = 3
+
+activeEncoderPage = EncoderPage.INTENSITY
 
 ###################
 ## STATE MACHINE ##
@@ -51,6 +59,14 @@ def get_element_from_coordinates(x, y):
 def GFXSetState(state):
     global ProgramState
     ProgramState = state
+
+def GFXSetEncoderPage(page):
+    global activeEncoderPage
+    activeEncoderPage = page
+
+def GFXGetEncoderPage():
+    global activeEncoderPage
+    return activeEncoderPage
 
 ###################
 ## DRAW ROUTINES ##
@@ -149,7 +165,23 @@ def DrawEncoderDisplay(encoders: EncoderState, activeEncoder: int):
         leftActive = True
     elif activeEncoder == 2:
         rightActive = True
-    DrawEncoderSingle("Red", encoders.Red, rl.RED, 1, leftActive)
-    DrawEncoderSingle("Green", encoders.Green, rl.GREEN, 2, leftActive)
-    DrawEncoderSingle("Blue", encoders.Blue, rl.BLUE, 3, rightActive)
-    DrawEncoderSingle("White", encoders.White, rl.WHITE, 4, rightActive)
+    
+    if activeEncoderPage == EncoderPage.INTENSITY:
+        DrawEncoderSingle("Intensity", encoders.Intensity, rl.GRAY, 1, leftActive)
+        DrawEncoderSingle("Zoom", encoders.Zoom, rl.GRAY, 3, rightActive)
+        DrawEncoderSingle("Focus", encoders.Focus, rl.GRAY, 4, rightActive)
+
+    elif activeEncoderPage == EncoderPage.COLOR_RGB:
+        DrawEncoderSingle("Red", encoders.Red, rl.RED, 1, leftActive)
+        DrawEncoderSingle("Green", encoders.Green, rl.GREEN, 2, leftActive)
+        DrawEncoderSingle("Blue", encoders.Blue, rl.BLUE, 3, rightActive)
+        DrawEncoderSingle("White", encoders.White, rl.WHITE, 4, rightActive)
+
+    elif activeEncoderPage == EncoderPage.COLOR_CMY:
+        DrawEncoderSingle("Cyan", encoders.Cyan, rl.Color(0, 255, 255, 255), 1, leftActive)
+        DrawEncoderSingle("Magenta", encoders.Magenta, rl.MAGENTA, 2, leftActive)
+        DrawEncoderSingle("Yellow", encoders.Yellow, rl.YELLOW, 3, rightActive)
+
+    elif activeEncoderPage == EncoderPage.POSITION:
+        DrawEncoderSingle("Pan", encoders.Pan, rl.RED, 1, leftActive)
+        DrawEncoderSingle("Tilt", encoders.Tilt, rl.BLUE, 2, leftActive)
