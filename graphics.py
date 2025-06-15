@@ -62,12 +62,12 @@ def GFXSetup():
     rl.init_window(320, 480, "LunarOSC-EOS")
     font = rl.load_font_ex("font.ttf", 200, None, 0)
 
-def GFXDraw(faders, channel, commandline, encoders):
+def GFXDraw(faders, channel, commandline, encoders, activeEncoder):
     global ProgramState
     rl.begin_drawing()
     if ProgramState == State.MAIN:
         # rl.draw_text_ex(font, "TEST", rl.Vector2(50, 120), 20, 0.5, rl.WHITE)
-        DrawMainWindow(faders=faders, channel=channel, commandline=commandline, encoders=encoders)
+        DrawMainWindow(faders=faders, channel=channel, commandline=commandline, encoders=encoders, activeEncoder=activeEncoder)
     if ProgramState == State.MENU:
         DrawMenuWindow()
     rl.end_drawing()

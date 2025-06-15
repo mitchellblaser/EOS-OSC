@@ -20,6 +20,10 @@ commandline = ""
 encoders = EncoderState()
 activeEncoder = 1 #1=Left, 2=Right
 
+def SetActiveEncoder(e: int):
+    global activeEncoder
+    activeEncoder = e
+    
 def Init(debug=False):
     global dbg
     dbg = debug

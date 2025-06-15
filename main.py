@@ -40,7 +40,7 @@ async def mainloop():
     graphics.GFXSetup()
 
     # Main Program Loop - Draw Window - Returns false when Raylib.window_should_close()
-    while not graphics.GFXDraw(faders=handle.faders, channel=handle.channel, commandline=handle.commandline, encoders=handle.encoders):
+    while not graphics.GFXDraw(faders=handle.faders, channel=handle.channel, commandline=handle.commandline, encoders=handle.encoders, activeEncoder=handle.activeEncoder):
         programlogic.StateFromClickEvent(graphics.scan())
         await asyncio.sleep(0)
 
