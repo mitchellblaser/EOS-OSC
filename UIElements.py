@@ -1,4 +1,7 @@
 class Boundary():
+    """
+    Helper class which stores the size and bounds of any one GUI element.
+    """
     def __init__(self, startX, startY, endX, endY):
         self.sx = startX
         self.sy = startY
@@ -7,6 +10,7 @@ class Boundary():
         self.width = endX-startX
         self.height = endY-startY
 
+# A list of all GUI elements (string, unique) in the Main Window
 Elements_MainWindow = {
     "Toolbar_Menu": Boundary(237, 3, 317, 47),
     "FaderBox_1": Boundary(5, 55, 315, 95),
@@ -20,6 +24,7 @@ Elements_MainWindow = {
     "Encoder_4": Boundary(162, 392, 318, 478)
 }
 
+# A list of all GUI elements (string, unique) in the Menu Window
 Elements_MenuWindow = {
     "Toolbar_Menu_Exit": Boundary(237, 3, 317, 47),
     "MyIP_1_Up": Boundary(30, 85, 80, 135),

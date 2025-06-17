@@ -4,6 +4,9 @@ from pythonosc.udp_client import SimpleUDPClient
 
 import graphics
 
+# Contains all neccesary keyboard mappings
+# Currently only used for the test environment but in future you would use
+# this to translate the USB Keyboard inputs to OSC messages.
 class Keys(Enum):
     NONE = 0
     KEY_INTENSITY = 49
@@ -27,9 +30,22 @@ class Keys(Enum):
     KEY_GO_4 = 86
     KEY_GO_5 = 66
 
+# Local variable to toggle between CMY and RGB color mixing
+# In future this may be best moved to ProgramLogic module or elsewhere, but it works here.
 CurrentColorPage = graphics.EncoderPage.COLOR_RGB
 
 def handle(client: SimpleUDPClient):
+    """
+    Polls the hardware for input and triggers GUI/OSC events.
+
+    Currently, we use raylib to poll keyboard events for local development testing.
+    Once real hardware is available you would need to handle these differently (serial/I2C/CAN?)
+    and reuse this block of code to translate EOS programming keyboard inputs to
+    OSC output messages to avoid issues with using direct keyboard input to Nomad.
+
+    Args:
+        client (SimpleUDPClient): The SimpleUDPClient to use for OSC messages.
+    """
     global CurrentColorPage
     x = rl.get_key_pressed()
     if x in Keys:
@@ -44,6 +60,8 @@ def handle(client: SimpleUDPClient):
             graphics.GFXSetEncoderPage(CurrentColorPage)
         elif x == Keys.KEY_POSITION:
             graphics.GFXSetEncoderPage(graphics.EncoderPage.POSITION)
+        # These two events are more of a test and probably shouldn't live here
+        # to allow for different console mappings etc. But it does work for now.
         elif x == Keys.KEY_MACRO_1:
             client.send_message("/eos/key/macro_809", 1)
         elif x == Keys.KEY_MACRO_2:

@@ -7,12 +7,17 @@ import UIElements as UI
 from programlogic import State, GetMyIPAddress, GetConsoleIPAddress
 from handle import SelectedChannel, EncoderState
 
+# Load a custom font
 font = rl.load_font_ex("font.ttf", 200, None, 0)
 
 #################
 ## DEFINITIONS ##
 #################
 class col():
+    """
+    Stores some predefined colors that determine how
+    we draw our UI elements
+    """
     encoderDisabled = rl.Color(10, 10, 10, 255)
     encoderBorders = rl.Color(30, 30, 30, 30)
     encoderTitle = rl.WHITE
@@ -26,21 +31,39 @@ class col():
     toolbarBackground = rl.GRAY
 
 class EncoderPage(Enum):
+    """
+    A list of all possible encoder pages
+    """
     INTENSITY = 0
     COLOR_RGB = 1
     COLOR_CMY = 2
     POSITION = 3
 
+# Default to intensity on bootup
 activeEncoderPage = EncoderPage.INTENSITY
 
-###################
-## STATE MACHINE ##
-###################
-def scan():
+def scan() -> str:
+    """
+    Checks if mouse button (or touch) has been pressed,
+    and returns the element's unique ID string.
+
+    Returns:
+        str: Unique element identifier.
+    """
     if rl.is_mouse_button_pressed(0):
         return get_element_from_coordinates(rl.get_mouse_x(), rl.get_mouse_y())
 
-def get_element_from_coordinates(x, y):
+def get_element_from_coordinates(x: int, y: int) -> str:
+    """
+    Checks all elements in a list and returns a unique identifier.
+
+    Args:
+        x (int): The X coordinate of the touch event.
+        y (int): The Y coordinate of the touch event.
+
+    Returns:
+        str: The unique identifier as a string.
+    """
     global ProgramState
 
     if ProgramState == State.MAIN:
@@ -48,23 +71,45 @@ def get_element_from_coordinates(x, y):
     elif ProgramState == State.MENU:
         iterate_target = UI.Elements_MenuWindow
     else:
-        return None
+        return ""
     
     for element in iterate_target:
         if x in range(iterate_target[element].sx, iterate_target[element].ex):
             if y in range(iterate_target[element].sy, iterate_target[element].ey):
                 return element
-    return None
+    return ""
 
-def GFXSetState(state):
+def GFXSetState(state: State):
+    """
+    Sets the local ProgramState variable,
+    which is responsible for changing pages in the application.
+
+    Args:
+        state (programlogic.State): The desired GUI page to draw.
+    """
     global ProgramState
     ProgramState = state
 
-def GFXSetEncoderPage(page):
+def GFXSetEncoderPage(page: EncoderPage):
+    """
+    Sets the local activeEncoderPage variable,
+    which is responsible for changing which encoder page is
+    currently being drawn.
+
+    Args:
+        page (EncoderPage): The desired encoder page to draw.
+    """
     global activeEncoderPage
     activeEncoderPage = page
 
-def GFXGetEncoderPage():
+def GFXGetEncoderPage() -> EncoderPage:
+    """
+    Exposes the variable activeEncoderPage so it can be called
+    from other modules.
+
+    Returns:
+        EncoderPage: The currently active Encoder Page.
+    """
     global activeEncoderPage
     return activeEncoderPage
 
