@@ -11,34 +11,32 @@ import programlogic
 
 from surface import Keys
 
-handle.Init(debug=True)
-
 dispatcher = Dispatcher()
-dispatcher.set_default_handler(handle.echo_handler, True)
-dispatcher.map("/eos/fader/*", handle.fader_level)
-dispatcher.map("/eos/out/fader/*", handle.fader_name)
-dispatcher.map("/eos/out/active/chan", handle.channel_select)
-dispatcher.map("/eos/out/cmd", handle.command_line)
-dispatcher.map("/eos/out/active/wheel/*", handle.encoder_update)
 
-programlogic.InitializeIPAddressConfig()
+def oscmap_eos():
+    dispatcher.set_default_handler(handle.eos_echo_handler, True)
+    dispatcher.map("/eos/fader/*", handle.eos_fader_level)
+    dispatcher.map("/eos/out/fader/*", handle.eos_fader_name)
+    dispatcher.map("/eos/out/active/chan", handle.eos_channel_select)
+    dispatcher.map("/eos/out/cmd", handle.eos_command_line)
+    dispatcher.map("/eos/out/active/wheel/*", handle.eos_encoder_update)
 
-## TODO: OSC Output
-## TODO: Continue sending osc init messages until we receive a ping in response
-## TODO: Add Keyboard input and translate to OSC for EOS key control
-## TODO: IP Address configuration from setup menu
-## TODO: Serial Input from Surface
+def oscsetup_eos(client):
+    # Configure OSC Fader Bank in EOS (5x faders)
+    client.send_message("/eos/fader/1/config/5", 1)
+    # Tell EOS we want to receive status updates
+    client.send_message("/eos/subscribe", 1)
+
+handle.Init(debug=True)
+programlogic.InitializeIPAddressConfig() #TODO: Need to make this actually do something...
 
 ## Main Thread, Initial setup, then Loop.
 async def mainloop():
     # Configure target console IP address, port
     client = SimpleUDPClient(programlogic.GetConsoleIPAddressString(), 8000)
     
-    # Configure OSC Fader Bank in EOS (5x faders)
-    client.send_message("/eos/fader/1/config/5", 1)
-
-    # Tell EOS we want to receive status updates
-    client.send_message("/eos/subscribe", 1)
+    # Send neccesary configuration steps to the console...
+    oscsetup_eos(client=client)
 
     # Initialize window (480x320px)
     graphics.GFXSetup()

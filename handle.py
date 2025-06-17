@@ -36,7 +36,7 @@ def Init(debug=False):
     dbg = debug
     return
 
-def echo_handler(client_addr, unused_addr, *args):
+def eos_echo_handler(client_addr, unused_addr, *args):
     if dbg:
         print("")
         print("Got unhandled OSC message...")
@@ -44,7 +44,7 @@ def echo_handler(client_addr, unused_addr, *args):
         print("")
     return
 
-def fader_name(address, *args):
+def eos_fader_name(address, *args):
     if dbg:
         print(f"{address}: {args}")
     if len(address.split("/")) > 5:
@@ -55,7 +55,7 @@ def fader_name(address, *args):
             faders[int(fader)-1][1] = name
     return
 
-def fader_level(address, *args):
+def eos_fader_level(address, *args):
     if dbg:
         print(f"{address}: {args}")
     bank = address.split("/")[3]
@@ -64,7 +64,7 @@ def fader_level(address, *args):
     faders[int(fader)-1][0] = args[0]
     return
 
-def channel_select(address, *args):
+def eos_channel_select(address, *args):
     global channel
     global encoders
     if args[0] == '':
@@ -76,7 +76,7 @@ def channel_select(address, *args):
         encoders = EncoderState()
     return
 
-def encoder_update(address, *args):
+def eos_encoder_update(address, *args):
     print(args)
     WheelType = args[0].split("  ")[0]
     if WheelType == "Intens":
@@ -105,7 +105,7 @@ def encoder_update(address, *args):
         encoders.Tilt = float(args[2])
     return
 
-def command_line(address, *args):
+def eos_command_line(address, *args):
     global commandline
     commandline = str(args[0])
     return
