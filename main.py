@@ -11,9 +11,10 @@ import programlogic
 
 from surface import Keys
 
-dispatcher = Dispatcher()
-
 def oscmap_eos():
+    """
+    Configures OSC address mappings to the dispatcher.
+    """
     dispatcher.set_default_handler(handle.eos_echo_handler, True)
     dispatcher.map("/eos/fader/*", handle.eos_fader_level)
     dispatcher.map("/eos/out/fader/*", handle.eos_fader_name)
@@ -21,17 +22,24 @@ def oscmap_eos():
     dispatcher.map("/eos/out/cmd", handle.eos_command_line)
     dispatcher.map("/eos/out/active/wheel/*", handle.eos_encoder_update)
 
-def oscsetup_eos(client):
+def oscsetup_eos(client: SimpleUDPClient):
+    """
+    Sends the neccesary OSC messages required for configuring the console.
+
+    Args:
+        client (SimpleUDPClient): The SimpleUDPClient to use for the messages.
+    """
     # Configure OSC Fader Bank in EOS (5x faders)
     client.send_message("/eos/fader/1/config/5", 1)
     # Tell EOS we want to receive status updates
     client.send_message("/eos/subscribe", 1)
 
-handle.Init(debug=True)
-programlogic.InitializeIPAddressConfig() #TODO: Need to make this actually do something...
-
-## Main Thread, Initial setup, then Loop.
 async def mainloop():
+    """
+    Main Application Logic function.
+    This function is called by init_main() as an async function after
+    the OSC server gets set up and the dispatcher gets configured.
+    """
     # Configure target console IP address, port
     client = SimpleUDPClient(programlogic.GetConsoleIPAddressString(), 8000)
     
@@ -51,8 +59,15 @@ async def mainloop():
     return
 
 
-# Configure the OSC server to send any incoming messages to the Dispatcher.
 async def init_main():
+    """
+    Configures the internal OSC Server to receive messages and route
+    to the dispatcher function.
+
+    Also runs the oscsetup_console() functions and
+    mainloop() which contains the core program logic.
+    """
+    oscmap_eos()
     server = AsyncIOOSCUDPServer(("127.0.0.1", 8001), dispatcher, asyncio.get_event_loop())
     transport, protocol = (
         await server.create_serve_endpoint()
@@ -60,4 +75,14 @@ async def init_main():
     await mainloop()
     transport.close()
 
+# Enable or Disable Verbose OSC output to the terminal.
+handle.Init(debug=True)
+
+# Configure our host system's IP Address to match the configuration defined in the ProgramLogic module.
+programlogic.InitializeIPAddressConfig() #TODO: Need to make this actually do something...
+
+# Create Dispatcher object outside of any functions so it is globally accessible
+dispatcher = Dispatcher()
+
+# Run the init_main() function
 asyncio.run(init_main())
