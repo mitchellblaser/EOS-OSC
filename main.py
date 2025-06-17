@@ -21,17 +21,18 @@ dispatcher.map("/eos/out/active/chan", handle.channel_select)
 dispatcher.map("/eos/out/cmd", handle.command_line)
 dispatcher.map("/eos/out/active/wheel/*", handle.encoder_update)
 
-## TODO: Encoder Control and OSC Output
+programlogic.InitializeIPAddressConfig()
+
+## TODO: OSC Output
 ## TODO: Continue sending osc init messages until we receive a ping in response
 ## TODO: Add Keyboard input and translate to OSC for EOS key control
 ## TODO: IP Address configuration from setup menu
 ## TODO: Serial Input from Surface
-## TODO: Do we need to support both CMY and RGB??
 
 ## Main Thread, Initial setup, then Loop.
 async def mainloop():
     # Configure target console IP address, port
-    client = SimpleUDPClient("127.0.0.1", 8000)
+    client = SimpleUDPClient(programlogic.GetConsoleIPAddressString(), 8000)
     
     # Configure OSC Fader Bank in EOS (5x faders)
     client.send_message("/eos/fader/1/config/5", 1)
@@ -45,7 +46,7 @@ async def mainloop():
     # Main Program Loop - Draw Window - Returns false when Raylib.window_should_close()
     while not graphics.GFXDraw(faders=handle.faders, channel=handle.channel, commandline=handle.commandline, encoders=handle.encoders, activeEncoder=handle.activeEncoder):
         programlogic.StateFromClickEvent(graphics.scan())
-        surface.handle()
+        surface.handle(client)
         await asyncio.sleep(0)
 
     #Gracefully close program... Do shutdown procedure here.

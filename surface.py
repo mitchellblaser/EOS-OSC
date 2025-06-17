@@ -1,5 +1,6 @@
 from enum import Enum
 import pyray as rl
+from pythonosc.udp_client import SimpleUDPClient
 
 import graphics
 
@@ -28,7 +29,7 @@ class Keys(Enum):
 
 CurrentColorPage = graphics.EncoderPage.COLOR_RGB
 
-def handle():
+def handle(client: SimpleUDPClient):
     global CurrentColorPage
     x = rl.get_key_pressed()
     if x in Keys:
@@ -43,4 +44,8 @@ def handle():
             graphics.GFXSetEncoderPage(CurrentColorPage)
         elif x == Keys.KEY_POSITION:
             graphics.GFXSetEncoderPage(graphics.EncoderPage.POSITION)
+        elif x == Keys.KEY_MACRO_1:
+            client.send_message("/eos/key/macro_809", 1)
+        elif x == Keys.KEY_MACRO_2:
+            client.send_message("/eos/key/macro_810", 1)
         return x

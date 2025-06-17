@@ -109,28 +109,3 @@ def command_line(address, *args):
     global commandline
     commandline = str(args[0])
     return
-
-#/eos/out/active/chan: ('',)
-#/eos/out/active/wheel/1: ('  [0]', 0, 0.0)
-
-# /eos/out/active/chan: ('1  [0] Custom Saturn_300_Wash',) 
-# /eos/out/active/wheel/1: ('Intens  [0]', 1, 0.0)
-# /eos/out/active/wheel/2: ('Pan  [80]', 2, 80.0)
-# /eos/out/active/wheel/3: ('Tilt  [-47]', 2, -47.400001525878906)
-# /eos/out/active/wheel/4: ('X Focus  [-3]', 2, -2.8993000984191895)
-# /eos/out/active/wheel/5: ('Y Focus  [-1]', 2, -0.5112000107765198)
-# /eos/out/active/wheel/6: ('Z Focus  [7]', 2, 6.707200050354004)
-# /eos/out/active/wheel/7: ('Position MSpeed  [100]', 2, 100.0)
-# /eos/out/active/wheel/8: ('Red  [30]', 3, 30.0)
-# /eos/out/active/wheel/9: ('Green  [10]', 3, 10.0)
-# /eos/out/active/wheel/10: ('Blue  [100]', 3, 100.0)
-# /eos/out/active/wheel/11: ('White  [100]', 3, 100.0)
-# /eos/out/active/wheel/12: ('Hue  [0]', 3, 0.0)
-# /eos/out/active/wheel/13: ('Saturation  [0]', 3, 0.0)
-# /eos/out/active/wheel/14: ('Color Macros  [0]', 3, 0.0)
-# /eos/out/active/wheel/15: ('Color Temperature  [0]', 3, 0.0)
-# /eos/out/active/wheel/16: ('Zoom  [5]', 5, 4.5)
-# /eos/out/active/wheel/17: ('Shutter Strobe  [0]', 5, 0.0)
-# /eos/out/color/hs: (307.3926086425781, 17.399124145507812)
-# /eos/out/pantilt: (-270.0, 270.0, -135.0, 135.0, 80.0, -47.400001525878906)
-# /eos/out/xyz: (-2.8993000984191895, -0.5112000107765198, 6.707200050354004)

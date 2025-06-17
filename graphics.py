@@ -4,7 +4,7 @@
 import pyray as rl
 from enum import Enum
 import UIElements as UI
-from programlogic import State
+from programlogic import State, GetMyIPAddress, GetConsoleIPAddress
 from handle import SelectedChannel, EncoderState
 
 font = rl.load_font_ex("font.ttf", 200, None, 0)
@@ -103,11 +103,32 @@ def DrawMainWindow(faders, channel, commandline, encoders, activeEncoder):
     # DrawSelectedChannel(channel)
     DrawCommandLine(commandline)
 
+def DrawNumberTicker(posx, posy, value):
+    rl.draw_rectangle(posx, posy, 50, 50, rl.GRAY)
+    rl.draw_text_ex(font, "+", rl.Vector2(posx+6, posy-15), 80, 0.5, rl.BLACK)
+    rl.draw_rectangle_lines(posx, posy+50, 50, 50, rl.GRAY)
+    rl.draw_text_ex(font, str(value), rl.Vector2(posx, posy+60), 28, 0.5, rl.WHITE)
+    rl.draw_rectangle(posx, posy+100, 50, 50, rl.GRAY)
+    rl.draw_text_ex(font, "-", rl.Vector2(posx+8, posy+100-27), 100, 0.5, rl.BLACK)
+
 def DrawMenuWindow():
     rl.clear_background(rl.BLACK)
     rl.draw_rectangle(0, 0, 320, 50, col.toolbarBackground)
     rl.draw_rectangle(UI.Elements_MainWindow["Toolbar_Menu"].sx, UI.Elements_MainWindow["Toolbar_Menu"].sy, UI.Elements_MainWindow["Toolbar_Menu"].width, UI.Elements_MainWindow["Toolbar_Menu"].height, col.buttonBackground)
     rl.draw_text_ex(font, "Back", rl.Vector2(UI.Elements_MainWindow["Toolbar_Menu"].sx+16, UI.Elements_MainWindow["Toolbar_Menu"].sy+10), 24, 0.5, col.buttonFont)
+
+    rl.draw_text_ex(font, "IP Address", rl.Vector2(30, 60), 24, 0.5, rl.WHITE)
+    DrawNumberTicker(30, 85, GetMyIPAddress()[0])
+    DrawNumberTicker(100, 85, GetMyIPAddress()[1])
+    DrawNumberTicker(170, 85, GetMyIPAddress()[2])
+    DrawNumberTicker(240, 85, GetMyIPAddress()[3])
+
+    rl.draw_text_ex(font, "Console IP", rl.Vector2(30, 240), 24, 0.5, rl.WHITE)
+    DrawNumberTicker(30, 265, GetConsoleIPAddress()[0])
+    DrawNumberTicker(100, 265, GetConsoleIPAddress()[1])
+    DrawNumberTicker(170, 265, GetConsoleIPAddress()[2])
+    DrawNumberTicker(240, 265, GetConsoleIPAddress()[3])
+
     return
 
 def DrawFaderIcon(index, text):
