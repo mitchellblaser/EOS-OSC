@@ -1,4 +1,5 @@
 import asyncio
+import serial
 
 from pythonosc.udp_client import SimpleUDPClient
 from pythonosc.dispatcher import Dispatcher
@@ -34,25 +35,27 @@ def oscsetup_eos(client: SimpleUDPClient):
     # Tell EOS we want to receive status updates
     client.send_message("/eos/subscribe", 1)
 
+# Configure target console IP address, port
+client = SimpleUDPClient(programlogic.GetConsoleIPAddressString(), 8000)
+
 async def mainloop():
     """
     Main Application Logic function.
     This function is called by init_main() as an async function after
     the OSC server gets set up and the dispatcher gets configured.
     """
-    # Configure target console IP address, port
-    client = SimpleUDPClient(programlogic.GetConsoleIPAddressString(), 8000)
-    
     # Send neccesary configuration steps to the console...
     oscsetup_eos(client=client)
 
     # Initialize window (480x320px)
     graphics.GFXSetup()
 
+    s = serial.Serial("/dev/cu.usbmodem21201", 1000000, timeout=0.01)
+
     # Main Program Loop - Draw Window - Returns false when Raylib.window_should_close()
     while not graphics.GFXDraw(faders=handle.faders, channel=handle.channel, commandline=handle.commandline, encoders=handle.encoders, activeEncoder=handle.activeEncoder):
+        surface.handle(client, s.readline())
         programlogic.StateFromClickEvent(graphics.scan())
-        surface.handle(client)
         await asyncio.sleep(0)
 
     #Gracefully close program... Do shutdown procedure here.
@@ -76,7 +79,7 @@ async def init_main():
     transport.close()
 
 # Enable or Disable Verbose OSC output to the terminal.
-handle.Init(debug=True)
+handle.Init(debug=False)
 
 # Configure our host system's IP Address to match the configuration defined in the ProgramLogic module.
 programlogic.InitializeIPAddressConfig() #TODO: Need to make this actually do something...

@@ -66,6 +66,10 @@ def Init(debug=False):
     dbg = debug
     return
     
+def GetActiveEncoder():
+    global activeEncoder
+    return activeEncoder
+
 def SetActiveEncoder(e: int):
     """
     Define whether the left or right side of the encoder display
@@ -137,13 +141,14 @@ def eos_channel_select(address, *args):
     """
     global channel
     global encoders
+    debug(args)
     if args[0] == '':
         channel = SelectedChannel()
         encoders = EncoderState()
     else:
         channel.active = True
         channel.name = args[0]
-        encoders = EncoderState()
+        # encoders = EncoderState()
     return
 
 def eos_encoder_update(address, *args):

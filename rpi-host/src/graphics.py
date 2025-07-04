@@ -211,7 +211,8 @@ def DrawEncoderSingle(title: str, value: float, color: rl.Color, index: int, act
         posy = 392
 
     if active and value != -1:
-        rl.draw_rectangle_gradient_v(posx, posy, 156, 86, rl.BLACK, color)
+        # rl.draw_rectangle_gradient_v(posx, posy, 156, 86, rl.BLACK, color)
+        rl.draw_rectangle(posx, posy, 156, 86, color)
     else:
         rl.draw_rectangle(posx, posy, 156, 86, col.encoderDisabled)
 
@@ -241,7 +242,7 @@ def DrawEncoderDisplay(encoders: EncoderState, activeEncoder: int):
         DrawEncoderSingle("Red", encoders.Red, rl.RED, 1, leftActive)
         DrawEncoderSingle("Green", encoders.Green, rl.GREEN, 2, leftActive)
         DrawEncoderSingle("Blue", encoders.Blue, rl.BLUE, 3, rightActive)
-        DrawEncoderSingle("White", encoders.White, rl.WHITE, 4, rightActive)
+        DrawEncoderSingle("White", encoders.White, rl.GRAY, 4, rightActive)
 
     elif activeEncoderPage == EncoderPage.COLOR_CMY:
         DrawEncoderSingle("Cyan", encoders.Cyan, rl.Color(0, 255, 255, 255), 1, leftActive)
